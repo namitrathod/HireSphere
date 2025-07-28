@@ -1,64 +1,220 @@
 import React, { useEffect, useState } from "react";
-import { api } from "../api";
-import { BriefcaseIcon } from "@heroicons/react/24/outline"; // optional, needs heroicons
+import { applicationAPI } from "../api";
+import { 
+  FaBriefcase, 
+  FaBuilding, 
+  FaCalendarAlt, 
+  FaCheckCircle,
+  FaTimesCircle,
+  FaClock,
+  FaSpinner
+} from "react-icons/fa";
 
 export default function Applications() {
   const [apps, setApps] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api("/api/applications/").then(setApps);
+    setLoading(true);
+    applicationAPI.getApplications()
+      .then((data) => {
+        console.log("Applications data:", data);
+        setApps(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Applications API error:", err);
+        setError(`Failed to load applications: ${err.message}`);
+        setLoading(false);
+      });
   }, []);
 
-  return (
-    <div className="max-w-6xl mx-auto p-6 mt-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">My Applications</h1>
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "Selected":
+        return <FaCheckCircle className="text-green-500" />;
+      case "Rejected":
+        return <FaTimesCircle className="text-red-500" />;
+      default:
+        return <FaClock className="text-yellow-500" />;
+    }
+  };
 
-      {apps.length === 0 ? (
-        <div className="bg-white p-6 rounded-lg shadow text-center text-gray-500">
-          You haven't applied to any jobs yet.
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Selected":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "Rejected":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "Shortlisted":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      default:
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <FaSpinner className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading your applications...</p>
         </div>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {apps.map((a) => (
-            <div
-              key={a.application_id}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition duration-200 p-6"
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Error Loading Applications</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+            My Applications
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Track the status of your job applications and stay updated on your career progress
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <FaBriefcase className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Applications</p>
+                <p className="text-2xl font-bold text-gray-900">{apps.length}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="bg-yellow-100 p-3 rounded-lg">
+                <FaClock className="h-6 w-6 text-yellow-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Pending</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {apps.filter(app => app.status === "Pending").length}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <FaCheckCircle className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Shortlisted</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {apps.filter(app => app.status === "Shortlisted").length}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="bg-green-100 p-3 rounded-lg">
+                <FaCheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Selected</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {apps.filter(app => app.status === "Selected").length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Applications List */}
+        {apps.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-6xl mb-4">📝</div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">No applications yet</h3>
+            <p className="text-gray-600 mb-6">
+              You haven't applied to any jobs yet. Start exploring opportunities!
+            </p>
+            <button 
+              onClick={() => window.location.href = '/jobs'} 
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
-              <div className="flex items-start gap-3 mb-3">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <BriefcaseIcon className="h-6 w-6 text-blue-600" />
+              Browse Jobs
+            </button>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+            {apps.map((app) => (
+              <div
+                key={app.application_id}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 p-6"
+              >
+                <div className="flex items-start space-x-4 mb-4">
+                  <div className="bg-blue-100 p-3 rounded-lg">
+                    <FaBriefcase className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {app.job.title}
+                    </h3>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <div className="flex items-center">
+                        <FaBuilding className="mr-2 text-gray-400" />
+                        <span>{app.job.department}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <FaCalendarAlt className="mr-2 text-gray-400" />
+                        <span>Applied: {new Date(app.date_applied).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {a.job.title}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Department: <span className="text-gray-700">{a.job.department}</span>
-                  </p>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    {getStatusIcon(app.status)}
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(app.status)}`}>
+                      {app.status}
+                    </span>
+                  </div>
+                  
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500">
+                      Application #{app.application_id}
+                    </p>
+                  </div>
                 </div>
               </div>
-
-              <p className="text-sm text-gray-500 mb-3">
-                Applied on:{" "}
-                <span className="text-gray-700 font-medium">{a.date_applied}</span>
-              </p>
-
-              <span
-                className={`inline-block px-3 py-1 rounded-full text-sm font-medium 
-                  ${
-                    a.status === "Selected"
-                      ? "bg-green-100 text-green-700"
-                      : a.status === "Rejected"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-              >
-                {a.status}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

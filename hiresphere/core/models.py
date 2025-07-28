@@ -73,6 +73,7 @@ class JobListings(models.Model):
     salary      = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     requirements= models.TextField(blank=True, null=True)
     posted_date = models.DateField()
+    is_active   = models.BooleanField(default=True)  # Add this field for job status management
 
     def __str__(self): return self.title
 
