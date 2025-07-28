@@ -237,12 +237,24 @@ Hiresphere/
 ## 🎨 Screenshots
 
 The project includes screenshots of key features:
-- Applications page
-- Decision page
-- Job details page
-- Job listing page
-- Scheduled interview page
-- Signup page
+<img width="1920" height="1020" alt="admin_dashboardpage" src="https://github.com/user-attachments/assets/211afcd5-c7e5-4b3e-826b-fa70f3211aaf" />
+<img width="1920" height="1020" alt="admin_applicationoverview" src="https://github.com/user-attachments/assets/d0ff6ba9-9919-4696-91bb-2f43766de3ee" />
+<img width="1920" height="1020" alt="User_scheduledinterviewpage" src="https://github.com/user-attachments/assets/406a37b8-da94-4983-8845-17f43e8d7501" />
+<img width="1920" height="1020" alt="user_joblistingpage" src="https://github.com/user-attachments/assets/2bd32fe4-19a1-498d-b561-12c7cb2359ff" />
+<img width="1920" height="1020" alt="user_jobdetailspage" src="https://github.com/user-attachments/assets/eefcb828-4ffd-4ba1-ac0a-2861c5c772dd" />
+<img width="1920" height="1020" alt="user_desicionpage" src="https://github.com/user-attachments/assets/be6d8001-6f62-40c1-8280-3808e1a3bc2c" />
+<img width="1920" height="1020" alt="User_applicationspage" src="https://github.com/user-attachments/assets/47b72f67-a2ac-4b7e-ada6-750e02ed24f6" />
+<img width="1920" height="1020" alt="signuppage'" src="https://github.com/user-attachments/assets/1e3c0756-071a-4fb2-a725-692f1cf5dc35" />
+<img width="1920" height="1020" alt="recruiter_shortlisted_can" src="https://github.com/user-attachments/assets/c7a56520-8c1e-4fe8-8671-915691e17f72" />
+<img width="1920" height="1020" alt="recruiter_scheduledinterview" src="https://github.com/user-attachments/assets/46a57a55-6ef7-49c3-b6a7-bb487513c00d" />
+<img width="1920" height="1020" alt="recruiter_hiring_decisionpage" src="https://github.com/user-attachments/assets/4c1e549e-26db-45dd-abe9-5f65867900fa" />
+<img width="1920" height="1020" alt="recruiter_dashboard" src="https://github.com/user-attachments/assets/e59945bb-aecd-4367-ae2d-10de1990ef64" />
+<img width="1920" height="1020" alt="loginpage" src="https://github.com/user-attachments/assets/b086de83-828b-4b5f-ac1c-dad7673c7f74" />
+<img width="1920" height="1020" alt="admin_usermanagement" src="https://github.com/user-attachments/assets/74ff1ec7-5d57-475d-a528-647668dfdf3e" />
+<img width="1920" height="1020" alt="admin_scheduledInterview" src="https://github.com/user-attachments/assets/012fda4c-ef97-4b44-b1c7-0ebf000275b9" />
+<img width="1920" height="1020" alt="admin_jobmanagment" src="https://github.com/user-attachments/assets/3d2323de-c5bc-4c40-9349-2bdd0c085465" />
+<img width="1920" height="1020" alt="admin_decisionmanagment" src="https://github.com/user-attachments/assets/a1626730-42f1-4ff0-82ad-8de7f9af7784" />
+
 
 ## 🤝 Contributing
 
