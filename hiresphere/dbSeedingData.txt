@@ -1,0 +1,24 @@
+What has been added:
+Departments: Engineering, HR, Sales, Marketing, Finance.
+Recruiters:
+recruiter1@hiresphere.com (pass: password123) - Engineering
+recruiter2@hiresphere.com (pass: password123) - HR
+recruiter@example.com (from before)
+Jobs:
+Senior Stick Fetcher ($120k)
+Chief Nap Officer ($85k)
+Frontend Wizard ($110k)
+Job Seekers (Applicants):
+seeker1@test.com (pass: password123) - Applied to "Senior Stick Fetcher" (Pending)
+seeker2@test.com (pass: password123) - Applied to "Frontend Wizard" (Shortlisted + Interview Scheduled)
+seeker3@test.com (pass: password123) - Idle
+alice@example.com (from before)
+Interview:
+One interview scheduled for seeker2 for the "Frontend Wizard" role.
+You can now log in with these accounts to see the data in your application!
+
+Login Credentials:
+
+Recruiter: recruiter1@hiresphere.com / password123
+Job Seeker: seeker1@test.com / password123
+Admin: admin@example.com / admin123
