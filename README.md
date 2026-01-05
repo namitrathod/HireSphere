@@ -28,19 +28,20 @@ HireSphere follows a **Microservices-ready** architecture, containerized with Do
 
 ```mermaid
 graph TD
-    User["Clients (Web/Mobile)"] -->|HTTP/WebSocket| LB["Load Balancer / Ingress"]
-    LB --> Frontend["React Frontend Container"]
-    LB --> Backend["Django REST API Container"]
+    User[Clients] -->|HTTP/WebSocket| LB[Load Balancer]
+    LB --> Frontend[React Frontend]
+    LB --> Backend[Django API]
     
-    subgraph "Async Processing Layer"
-        Backend -->|Writes| DB[("PostgreSQL")]
-        Backend -->|Tasks| Redis["Redis Message Broker"]
-        Redis -->|Consumes| Celery["Celery Workers"]
-        Celery -->|Inference| OpenAI["GPT-4o Scoring Engine"]
-        Celery -->|Alerts| Slack["Slack Integration"]
+    Backend -->|Writes| DB[(PostgreSQL)]
+    Backend -->|Tasks| Redis[Redis Broker]
+    
+    subgraph AsyncWorker
+        Redis -->|Consumes| Celery[Celery Worker]
+        Celery -->|Inference| OpenAI[GPT-4o Engine]
+        Celery -->|Alerts| Slack[Slack Webhook]
     end
     
-    Celery -.->|Real-time Events| Backend
+    Celery -->|Events| Backend
 ```
 
 ---
