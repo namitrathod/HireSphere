@@ -28,16 +28,16 @@ HireSphere follows a **Microservices-ready** architecture, containerized with Do
 
 ```mermaid
 graph TD
-    User[Clients (Web/Mobile)] -->|HTTP/WebSocket| LB[Load Balancer / Ingress]
-    LB --> Frontend[React Frontend Container]
-    LB --> Backend[Django REST API Container]
+    User["Clients (Web/Mobile)"] -->|HTTP/WebSocket| LB["Load Balancer / Ingress"]
+    LB --> Frontend["React Frontend Container"]
+    LB --> Backend["Django REST API Container"]
     
     subgraph "Async Processing Layer"
-        Backend -->|Writes| DB[(PostgreSQL)]
-        Backend -->|Tasks| Redis[Redis Message Broker]
-        Redis -->|Consumes| Celery[Celery Workers]
-        Celery -->|Inference| OpenAI[GPT-4o Scoring Engine]
-        Celery -->|Alerts| Slack[Slack Integration]
+        Backend -->|Writes| DB[("PostgreSQL")]
+        Backend -->|Tasks| Redis["Redis Message Broker"]
+        Redis -->|Consumes| Celery["Celery Workers"]
+        Celery -->|Inference| OpenAI["GPT-4o Scoring Engine"]
+        Celery -->|Alerts| Slack["Slack Integration"]
     end
     
     Celery -.->|Real-time Events| Backend
@@ -47,7 +47,7 @@ graph TD
 
 ## 🎯 Key Capabilities
 
-### � 1. AI-Driven Resume Intelligence
+### 🤖 1. AI-Driven Resume Intelligence
 We move beyond simple keyword counting. The **Context-Aware Scoring Model** evaluates:
 *   **40% Skills Match**: Technical hard skills relevance.
 *   **30% Experience Depth**: Impact, tenure, and role progression.
@@ -66,7 +66,7 @@ We move beyond simple keyword counting. The **Context-Aware Scoring Model** eval
 
 ---
 
-## 📊 Engineering Highlights (FAANG-Style)
+## 📊 Engineering Highlights
 *   **Asynchronous Design**: Decoupled expensive AI inference from the user-facing API path.
 *   **Horizontal Scalability**: Worker nodes (Celery) can be scaled independently of the API nodes based on queue depth.
 *   **Explainable AI**: Every score comes with a "Why?" section, building trust with the human recruiter.
@@ -78,11 +78,7 @@ We move beyond simple keyword counting. The **Context-Aware Scoring Model** eval
 
 | Recruiter Dashboard | Candidate Deep Dive |
 |:---:|:---:|
-| <img src="https://github.com/user-attachments/assets/e59945bb-aecd-4367-ae2d-10de1990ef64" width="400"> | <img src="https://github.com/user-attachments/assets/c7a56520-8c1e-4fe8-8671-915691e17f72" width="400"> |
-
-**More Views:**
-*   [Hiring Decisions Flow](https://github.com/user-attachments/assets/4c1e549e-26db-45dd-abe9-5f65867900fa)
-*   [Admin Overview](https://github.com/user-attachments/assets/211afcd5-c7e5-4b3e-826b-fa70f3211aaf)
+| <img src="https://github.com/user-attachments/assets/43f51d78-8089-442c-8714-efa8e0d5c6b9" width="400"> | <img src="https://github.com/user-attachments/assets/16e26edc-230d-4575-aded-1b61b9ab1192" width="400"> |
 
 ---
 
@@ -130,7 +126,7 @@ kubectl apply -f k8s/frontend.yml
 
 ---
 
-## 👨‍� Author
+## 👨‍💻 Author
 
 **Namit Rathod**
 *Software Engineer | Backend & Distributed Systems*
