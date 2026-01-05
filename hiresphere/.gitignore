@@ -1,6 +1,6 @@
-.env
 # Secrets
 .env
+**/.env
 .venv/
 venv/
 env/
