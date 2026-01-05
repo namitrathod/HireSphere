@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { applicationAPI } from "../api";
-import { 
-  FaBriefcase, 
-  FaBuilding, 
-  FaCalendarAlt, 
+import {
+  FaBriefcase,
+  FaBuilding,
+  FaCalendarAlt,
   FaCheckCircle,
   FaTimesCircle,
   FaClock,
@@ -14,6 +14,9 @@ export default function Applications() {
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
+
 
   useEffect(() => {
     setLoading(true);
@@ -72,8 +75,8 @@ export default function Applications() {
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Error Loading Applications</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Try Again
@@ -82,6 +85,34 @@ export default function Applications() {
       </div>
     );
   }
+
+  const handleResumeUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadMessage("");
+    try {
+      // Import uploadResume from your api file, or use fetch directly here
+      const formData = new FormData();
+      formData.append("resume", file);
+
+      const res = await fetch("/api/upload-resume/", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setUploadMessage("✅ Resume uploaded! AI is parsing it...");
+      } else {
+        setUploadMessage("❌ Upload failed: " + data.error);
+      }
+    } catch (err) {
+      setUploadMessage("❌ Error uploading file.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -96,6 +127,44 @@ export default function Applications() {
           </p>
         </div>
 
+        {/* Resume Upload Section
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100 mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">Resume Intelligence</h2>
+              <p className="text-gray-600 text-sm">
+                Upload your resume to let our AI match you with the best jobs.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-4">
+              {uploadMessage && (
+                <span className={`text-sm font-medium ${uploadMessage.includes('✅') ? 'text-green-600' : 'text-red-600'}`}>
+                  {uploadMessage}
+                </span>
+              )}
+
+              <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+                {uploading ? (
+                  <span>Uploading...</span>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                    <span>Upload Resume</span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  onChange={handleResumeUpload}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+          </div>
+        </div> */}
+
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -109,7 +178,7 @@ export default function Applications() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="bg-yellow-100 p-3 rounded-lg">
@@ -123,7 +192,7 @@ export default function Applications() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="bg-blue-100 p-3 rounded-lg">
@@ -137,7 +206,7 @@ export default function Applications() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="bg-green-100 p-3 rounded-lg">
@@ -161,8 +230,8 @@ export default function Applications() {
             <p className="text-gray-600 mb-6">
               You haven't applied to any jobs yet. Start exploring opportunities!
             </p>
-            <button 
-              onClick={() => window.location.href = '/jobs'} 
+            <button
+              onClick={() => window.location.href = '/jobs'}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
               Browse Jobs
@@ -203,7 +272,7 @@ export default function Applications() {
                       {app.status}
                     </span>
                   </div>
-                  
+
                   <div className="text-right">
                     <p className="text-xs text-gray-500">
                       Application #{app.application_id}

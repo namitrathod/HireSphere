@@ -44,7 +44,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Applicant(models.Model):
-    user            = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='applicant_profile')
+    resume = models.FileField(upload_to='resumes/', null=True, blank=True)
+    parsed_data = models.JSONField(default=dict, blank=True)
+    
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
     contact_number  = models.CharField(max_length=50, blank=True, null=True)
     experience      = models.IntegerField(blank=True, null=True)
     skills          = models.TextField(blank=True, null=True)
@@ -91,6 +96,7 @@ class Application(models.Model):
     job        = models.ForeignKey(JobListings, on_delete=models.CASCADE, related_name="applications")
     applicant  = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name="applications")
     status     = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
+    score      = models.FloatField(default=0.0)  # AI-calculated score (0-100)
     date_applied = models.DateField(auto_now_add=True)
 
 class InterviewSchedule(models.Model):
@@ -102,6 +108,10 @@ class InterviewSchedule(models.Model):
     date        = models.DateField()
     time        = models.TimeField()
     status      = models.CharField(max_length=20, choices=STATUS, default="Scheduled")
+    meeting_type = models.CharField(max_length=50, default="Technical Interview")
+    location    = models.CharField(max_length=200, blank=True, null=True)
+    meeting_link= models.URLField(blank=True, null=True)
+    notes       = models.TextField(blank=True, null=True)
 
 class HiringDecisions(models.Model):
     id = models.BigAutoField(primary_key=True)

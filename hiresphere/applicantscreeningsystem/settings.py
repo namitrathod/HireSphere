@@ -68,9 +68,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
+    'channels',
     'django.contrib.staticfiles',
     "rest_framework",
-    "corsheaders",
+    'corsheaders',
+    'django_filters',
     'core'
 ]
 
@@ -116,6 +119,7 @@ TEMPLATES = [
 TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, '../frontend/build')]
 
 WSGI_APPLICATION = 'applicantscreeningsystem.wsgi.application'
+ASGI_APPLICATION = "applicantscreeningsystem.asgi.application"
 
 
 # Database
@@ -136,7 +140,25 @@ AUTHENTICATION_BACKENDS = [
     "core.auth_backends.DBUserBackend",
 ]
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
 AUTH_USER_MODEL = 'core.User'
+
+# Channels / Redis
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [env('CELERY_BROKER_URL')],
+        },
+    },
+}
+
+# Development: Run tasks synchronously (no worker needed)
+CELERY_TASK_ALWAYS_EAGER = True
 
 
 # Password validation
@@ -180,3 +202,22 @@ LOGIN_URL = "login"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+# Celery Configuration Options
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+
+# Slack Configuration
+SLACK_WEBHOOK_URL = env('SLACK_WEBHOOK_URL', default='')

@@ -45,6 +45,7 @@ urlpatterns: list[path] = [
     path("recruit/decisions/",               views.recruiter_decisions,   name="recruiter_decisions"),
     path("recruit/hire/<int:app_id>/",       views.hire,                  name="hire"),
     path("applications/view/<int:app_id>/",  views.view_application,      name="view_application"),
+    path('api/recruiter/search/', views.api_search_candidates, name='api_search_candidates'),
 
     # ─── Admin (HTML views) ────────────────────────────────────────
     path("internal/admin/jobs/",         views.admin_jobs,  name="admin_jobs"),
@@ -61,12 +62,14 @@ urlpatterns: list[path] = [
     
     # ─── Recruiter API endpoints ───────────────────────────────────
     path("api/recruiter/dashboard/",      views.api_recruiter_dashboard,      name="api_recruiter_dashboard"),
+    path("api/recruiter/post-job/",      views.api_recruiter_post_job,       name="api_recruiter_post_job"),
     path("api/recruiter/shortlisted/",   views.api_shortlisted_applications, name="api_shortlisted_applications"),
     path("api/recruiter/interviews/",    views.api_recruiter_interviews,     name="api_recruiter_interviews"),
     path("api/recruiter/decisions/",     views.api_recruiter_decisions,      name="api_recruiter_decisions"),
     path("api/recruiter/applications/<int:app_id>/", views.api_view_application, name="api_view_application"),
     path("api/recruiter/schedule/<int:app_id>/", views.api_schedule_interview, name="api_schedule_interview"),
     path("api/recruiter/decision/<int:app_id>/", views.api_make_decision, name="api_make_decision"),
+    path("api/recruiter/status/<int:app_id>/", views.api_update_application_status, name="api_update_application_status"),
     
     # ─── Admin API endpoints ───────────────────────────────────────
     path("api/admin/dashboard-stats/",   views.api_admin_dashboard_stats,    name="api_admin_dashboard_stats"),
@@ -87,3 +90,9 @@ urlpatterns: list[path] = [
     path("api/test/",                     views.test_api,        name="test_api"),
     path("api/test-data/",                views.api_test_data,   name="api_test_data"),
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

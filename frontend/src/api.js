@@ -18,13 +18,19 @@ function getCookie(name) {
 // Helper function for API calls
 async function apiCall(endpoint, options = {}) {
   const csrftoken = getCookie("csrftoken");
-  
+
+  const defaultHeaders = {
+    "X-CSRFToken": csrftoken,
+  };
+
+  // Only set Content-Type to JSON if body is NOT FormData
+  if (!(options.body instanceof FormData)) {
+    defaultHeaders["Content-Type"] = "application/json";
+  }
+
   const defaultOptions = {
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
+    headers: defaultHeaders,
   };
 
   try {
@@ -35,7 +41,7 @@ async function apiCall(endpoint, options = {}) {
     });
 
     console.log(`Response status: ${response.status}`);
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`API Error: ${response.status} - ${errorText}`);
@@ -59,7 +65,7 @@ export const authAPI = {
     formData.append("password", password);
 
     const csrftoken = getCookie("csrftoken");
-    
+
     const response = await fetch(`${API_BASE_URL}/login/`, {
       method: "POST",
       headers: {
@@ -80,7 +86,7 @@ export const authAPI = {
     });
 
     const csrftoken = getCookie("csrftoken");
-    
+
     const response = await fetch(`${API_BASE_URL}/signup/`, {
       method: "POST",
       headers: {
@@ -103,7 +109,17 @@ export const authAPI = {
 export const jobAPI = {
   getJobs: () => apiCall('/api/jobs/'),
   getJobDetail: (id) => apiCall(`/api/jobs/${id}/`),
-  applyForJob: (id) => apiCall(`/api/jobs/${id}/apply/`, { method: 'POST' }),
+  applyForJob: (id, file = null) => {
+    if (file) {
+      const formData = new FormData();
+      formData.append("resume", file);
+      return apiCall(`/api/jobs/${id}/apply/`, {
+        method: 'POST',
+        body: formData
+      });
+    }
+    return apiCall(`/api/jobs/${id}/apply/`, { method: 'POST' });
+  },
 };
 
 // Application API
@@ -127,28 +143,47 @@ export const decisionAPI = {
 export const recruiterAPI = {
   // Dashboard
   getDashboardStats: () => apiCall('/api/recruiter/dashboard/'),
-  
+
   // Shortlisted applications
+  postJob: (jobData) =>
+    apiCall('/api/recruiter/post-job/', {
+      method: 'POST',
+      body: JSON.stringify(jobData)
+    }),
   getShortlistedApplications: () => apiCall('/api/recruiter/shortlisted/'),
-  
+
   // Interviews
   getInterviews: () => apiCall('/api/recruiter/interviews/'),
-  scheduleInterview: (appId, interviewData) => 
+  scheduleInterview: (appId, interviewData) =>
     apiCall(`/api/recruiter/schedule/${appId}/`, {
       method: 'POST',
       body: JSON.stringify(interviewData),
     }),
-  
+
   // Decisions
   getDecisions: () => apiCall('/api/recruiter/decisions/'),
-  makeDecision: (appId, decision) => 
+  makeDecision: (appId, decision) =>
     apiCall(`/api/recruiter/decision/${appId}/`, {
       method: 'POST',
       body: JSON.stringify({ decision }),
     }),
-  
+
   // Applications
   getApplicationDetails: (appId) => apiCall(`/api/recruiter/applications/${appId}/`),
+
+  updateStatus: (appId, status) =>
+    apiCall(`/api/recruiter/status/${appId}/`, {
+      method: "POST",
+      body: JSON.stringify({ status }),
+    }),
+
+  // Search
+  searchCandidates: (params) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiCall(`/api/recruiter/search/?${queryString}`, {
+      method: "GET",
+    });
+  },
 };
 
 // Test API
@@ -156,3 +191,20 @@ export const testAPI = {
   testConnection: () => apiCall('/api/test/'),
   testData: () => apiCall('/api/test-data/'),
 };
+
+
+// 
+/* Add this inside your API object or export it */
+export const uploadResume = async (file) => {
+  const formData = new FormData();
+  formData.append("resume", file);
+
+  const response = await fetch("/api/upload-resume/", {
+    method: "POST",
+    body: formData,
+    // Note: Do NOT set Content-Type header manually for FormData; 
+    // the browser sets it with the boundary automatically.
+  });
+  return response.json();
+};
+

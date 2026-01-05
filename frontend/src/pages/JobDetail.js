@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { jobAPI } from "../api";
-import { 
-  FaBriefcase, 
-  FaBuilding, 
-  FaCalendarAlt, 
+import {
+  FaBriefcase,
+  FaBuilding,
+  FaCalendarAlt,
   FaMoneyBillWave,
   FaUserTie,
   FaSpinner,
@@ -21,6 +21,8 @@ export default function JobDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [applying, setApplying] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -36,15 +38,21 @@ export default function JobDetail() {
       });
   }, [id]);
 
-  const handleApply = async () => {
+  const openApplyModal = () => {
+    setShowModal(true);
+  };
+
+  const confirmApply = async () => {
     setApplying(true);
     try {
-      await jobAPI.applyToJob(id);
+      await jobAPI.applyForJob(id, resumeFile);
       setApplied(true);
       setApplying(false);
+      setShowModal(false);
     } catch (err) {
       setError("Failed to apply for the job");
       setApplying(false);
+      setShowModal(false);
     }
   };
 
@@ -66,8 +74,8 @@ export default function JobDetail() {
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Error Loading Job</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Try Again
@@ -84,8 +92,8 @@ export default function JobDetail() {
           <div className="text-gray-400 text-6xl mb-4">🔍</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Job Not Found</h2>
           <p className="text-gray-600 mb-4">The job you're looking for doesn't exist.</p>
-          <button 
-            onClick={() => navigate('/jobs')} 
+          <button
+            onClick={() => navigate('/jobs')}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Back to Jobs
@@ -96,7 +104,74 @@ export default function JobDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
+      {/* --- APPLICATION MODAL --- */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-fade-in-up">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-gray-900">Complete Application</h3>
+                <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+                  <FaTimesCircle className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                  <h4 className="font-semibold text-blue-900 text-sm mb-1">{job.title}</h4>
+                  <p className="text-blue-700 text-xs">{job.department.name}</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Upload Resume (PDF)
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors bg-gray-50 group cursor-pointer focus-within:border-blue-500">
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => setResumeFile(e.target.files[0])}
+                      className="hidden"
+                      id="resume-upload"
+                    />
+                    <label htmlFor="resume-upload" className="cursor-pointer">
+                      <FaBriefcase className="mx-auto h-8 w-8 text-gray-400 mb-2 group-hover:text-blue-500 transition-colors" />
+                      <span className="block text-sm text-blue-600 font-medium">Click to upload</span>
+                      <span className="text-xs text-gray-500">or drag and drop here</span>
+                      <p className="text-xs text-gray-400 mt-2 font-medium truncate">
+                        {resumeFile ? `Selected: ${resumeFile.name}` : "No file selected"}
+                      </p>
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Your resume will be parsed by our AI to match your skills.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={applying}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmApply}
+                disabled={applying}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center shadow-lg"
+              >
+                {applying ? <FaSpinner className="animate-spin mr-2" /> : null}
+                {applying ? "Submitting..." : "Submit Application"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
         <button
@@ -127,6 +202,8 @@ export default function JobDetail() {
                 </div>
               </div>
             </div>
+
+            {/* Header Action Button (Apply) */}
             <div className="ml-6">
               {applied ? (
                 <div className="flex items-center text-green-600 bg-green-50 px-4 py-2 rounded-lg border border-green-200">
@@ -135,21 +212,11 @@ export default function JobDetail() {
                 </div>
               ) : (
                 <button
-                  onClick={handleApply}
-                  disabled={applying}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                  onClick={openApplyModal}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center shadow-md"
                 >
-                  {applying ? (
-                    <>
-                      <FaSpinner className="animate-spin mr-2" />
-                      Applying...
-                    </>
-                  ) : (
-                    <>
-                      <FaBriefcase className="mr-2" />
-                      Apply Now
-                    </>
-                  )}
+                  <FaBriefcase className="mr-2" />
+                  Apply Now
                 </button>
               )}
             </div>
@@ -168,7 +235,7 @@ export default function JobDetail() {
           )}
         </div>
 
-        {/* Job Details */}
+        {/* Job Details Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
@@ -230,7 +297,7 @@ export default function JobDetail() {
               </div>
             </div>
 
-            {/* Application Status */}
+            {/* Application Status (Sidebar) */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Application Status</h3>
               {applied ? (
@@ -240,24 +307,18 @@ export default function JobDetail() {
                 </div>
               ) : (
                 <div className="text-gray-600">
-                  <p className="mb-3">You haven't applied for this position yet.</p>
+                  <p className="mb-4">Ready to start your journey? Apply now to get started.</p>
                   <button
-                    onClick={handleApply}
-                    disabled={applying}
-                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    onClick={openApplyModal}
+                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-bold shadow-md hover:shadow-lg transform active:scale-95 duration-200 flex items-center justify-center"
                   >
-                    {applying ? (
-                      <>
-                        <FaSpinner className="animate-spin mr-2" />
-                        Applying...
-                      </>
-                    ) : (
-                      <>
-                        <FaBriefcase className="mr-2" />
-                        Apply Now
-                      </>
-                    )}
+                    <FaBriefcase className="mr-2" />
+                    Apply Now
                   </button>
+                  <p className="text-xs text-center text-gray-400 mt-3">
+                    <FaCheckCircle className="inline mr-1" />
+                    AI Resume Scoring Included
+                  </p>
                 </div>
               )}
             </div>

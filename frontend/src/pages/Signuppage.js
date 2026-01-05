@@ -1,16 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthHeader from "../components/AuthHeader";
+import { authAPI } from "../api";
 
-export default function SignupPage({
-  email,
-  setEmail,
-  password,
-  setPassword,
-  confirmPassword,
-  setConfirmPassword,
-  handleSubmit,
-  error,
-}) {
+export default function SignupPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("JOBSEEKER"); // Default role
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Warm up CSRF cookie
+    fetch('http://localhost:8000/login/', { method: 'GET', credentials: 'include' }).catch(() => { });
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    setError(null);
+
+    try {
+      await authAPI.signup({ email, password, role });
+      alert("Signup successful! Please login.");
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      setError("Signup failed. Please try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <AuthHeader />
@@ -31,6 +54,18 @@ export default function SignupPage({
                 className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Role</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="JOBSEEKER">Job Seeker</option>
+                <option value="RECRUITER">Recruiter</option>
+              </select>
             </div>
 
             <div>

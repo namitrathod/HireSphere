@@ -46,13 +46,13 @@ const ScheduleInterviewPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setSubmitting(true);
       setError(null);
-      
+
       await recruiterAPI.scheduleInterview(candidateId, formData);
-      
+
       alert('Interview scheduled successfully!');
       navigate('/recruiter/interviews');
     } catch (err) {
@@ -139,7 +139,7 @@ const ScheduleInterviewPage = () => {
                     <p className="text-sm text-gray-500">{candidate.candidate.email}</p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex items-center">
                     <FaBriefcase className="text-gray-400 mr-2" />
@@ -169,13 +169,13 @@ const ScheduleInterviewPage = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-6">Interview Details</h2>
-              
+
               {error && (
                 <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-red-600">{error}</p>
                 </div>
               )}
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -192,7 +192,7 @@ const ScheduleInterviewPage = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-2">
                       Interview Time
@@ -225,7 +225,7 @@ const ScheduleInterviewPage = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
                       Interview Type
@@ -238,6 +238,7 @@ const ScheduleInterviewPage = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="Technical Interview">Technical Interview</option>
+                      <option value="Video Interview">Video Interview (WebRTC)</option>
                       <option value="Behavioral Interview">Behavioral Interview</option>
                       <option value="Portfolio Review">Portfolio Review</option>
                       <option value="Final Round">Final Round</option>

@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  FaBriefcase, 
-  FaUsers, 
-  FaFileAlt, 
-  FaCalendarAlt, 
-  FaCheckCircle, 
+import {
+  FaBriefcase,
+  FaUsers,
+  FaFileAlt,
+  FaCalendarAlt,
+  FaCheckCircle,
   FaSignOutAlt,
   FaUser,
   FaChartBar
@@ -14,7 +14,7 @@ import {
 export default function AdminNavBar() {
   const navigate = useNavigate();
   const username = sessionStorage.getItem("username") || "Admin";
-  
+
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/login");
@@ -26,7 +26,7 @@ export default function AdminNavBar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo / Brand */}
           <div className="flex-shrink-0">
-            <Link to="/admin" className="text-xl font-bold text-white flex items-center">
+            <Link to="/admin/dashboard" className="text-xl font-bold text-white flex items-center">
               <FaUser className="mr-2" />
               Admin Panel
             </Link>
@@ -34,43 +34,43 @@ export default function AdminNavBar() {
 
           {/* Navigation Links */}
           <div className="hidden md:flex space-x-8">
-            <Link 
-              to="/admin" 
+            <Link
+              to="/admin/dashboard"
               className="text-gray-300 hover:text-white font-medium flex items-center transition-colors"
             >
               <FaChartBar className="mr-1" />
               Dashboard
             </Link>
-            <Link 
-              to="/admin/users" 
+            <Link
+              to="/admin/users"
               className="text-gray-300 hover:text-white font-medium flex items-center transition-colors"
             >
               <FaUsers className="mr-1" />
               Users
             </Link>
-            <Link 
-              to="/admin/jobs" 
+            <Link
+              to="/admin/jobs"
               className="text-gray-300 hover:text-white font-medium flex items-center transition-colors"
             >
               <FaBriefcase className="mr-1" />
               Jobs
             </Link>
-            <Link 
-              to="/admin/applications" 
+            <Link
+              to="/admin/applications"
               className="text-gray-300 hover:text-white font-medium flex items-center transition-colors"
             >
               <FaFileAlt className="mr-1" />
               Applications
             </Link>
-            <Link 
-              to="/admin/interviews" 
+            <Link
+              to="/admin/interviews"
               className="text-gray-300 hover:text-white font-medium flex items-center transition-colors"
             >
               <FaCalendarAlt className="mr-1" />
               Interviews
             </Link>
-            <Link 
-              to="/admin/decisions" 
+            <Link
+              to="/admin/decisions"
               className="text-gray-300 hover:text-white font-medium flex items-center transition-colors"
             >
               <FaCheckCircle className="mr-1" />

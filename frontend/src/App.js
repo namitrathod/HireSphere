@@ -16,6 +16,7 @@ import DashboardPage from "./recruiter/pages/DashboardPage";
 import InterviewsPage from "./recruiter/pages/InterviewsPage";
 import DecisionsPage from "./recruiter/pages/DecisionsPage";
 import ShortlistedPage from "./recruiter/pages/ShortlistedPage";
+import PostJobPage from "./recruiter/pages/PostJobPage";
 import ScheduleInterviewPage from "./recruiter/pages/ScheduleInterviewPage";
 import ViewApplicationPage from "./recruiter/pages/ViewApplicationPage";
 import RecruiterNavBar from "./recruiter/components/RecruiterNavBar";
@@ -29,13 +30,15 @@ import AdminInterviewsPage from "./admin/pages/InterviewsPage";
 import AdminDecisionsPage from "./admin/pages/DecisionsPage";
 import AdminNavBar from "./admin/components/AdminNavBar";
 
+import { WebSocketProvider } from "./context/WebSocketContext";
+
 function AppRoutes() {
   const isLoggedIn = !!sessionStorage.getItem("userRole");
   const location = useLocation();
 
   const hideNavOn = ["/login", "/signup", "/test"];
   const shouldHideNav = hideNavOn.includes(location.pathname);
-  
+
   // Check if current route is recruiter route
   const isRecruiterRoute = location.pathname.startsWith("/recruiter/");
   // Check if current route is admin route
@@ -44,15 +47,15 @@ function AppRoutes() {
   return (
     <>
       {!shouldHideNav && isLoggedIn && (
-        isRecruiterRoute ? <RecruiterNavBar /> : 
-        isAdminRoute ? <AdminNavBar /> : 
-        <NavBar />
+        isRecruiterRoute ? <RecruiterNavBar /> :
+          isAdminRoute ? <AdminNavBar /> :
+            <NavBar />
       )}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/test" element={<TestPage />} />
-        <Route path="/admin" element={<AdminDashboardPage />} />
+
 
         {isLoggedIn ? (
           <>
@@ -66,6 +69,7 @@ function AppRoutes() {
             <Route path="/recruiter/dashboard" element={<DashboardPage />} />
             <Route path="/recruiter/interviews" element={<InterviewsPage />} />
             <Route path="/recruiter/decisions" element={<DecisionsPage />} />
+            <Route path="/recruiter/post-job" element={<PostJobPage />} />
             <Route path="/recruiter/shortlisted" element={<ShortlistedPage />} />
             <Route path="/recruiter/schedule-interview/:candidateId" element={<ScheduleInterviewPage />} />
             <Route path="/recruiter/view-application/:applicationId" element={<ViewApplicationPage />} />
@@ -89,9 +93,11 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <WebSocketProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </WebSocketProvider>
   );
 }
 
