@@ -1,0 +1,5 @@
+# Ignore secrets in k8s
+k8s/secrets.yml
+
+# Ignore node_modules if present in root (just in case)
+node_modules/
